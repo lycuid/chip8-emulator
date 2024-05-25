@@ -1,0 +1,7 @@
+-Wall
+-Wextra
+-Wvla
+-pedantic
+-std=c99
+-ggdb
+-I.

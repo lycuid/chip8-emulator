@@ -1,0 +1,10 @@
+-Wall
+-Wextra
+-Wvla
+-pedantic
+-std=c99
+-ggdb
+-Isrc
+-Ilib
+-I/usr/include/SDL2
+-D_REENTRANT
