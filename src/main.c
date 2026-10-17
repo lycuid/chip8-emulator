@@ -8,18 +8,19 @@
 int main(int argc, char const *argv[])
 {
     Chip8 chip8;
+    chip8_init(&chip8);
+
     char buffer[MAX_ROM_SIZE] = {0};
     {
         int fd = open(argc > 1 ? argv[1] : "rom/PONG2", O_RDONLY);
         read(fd, buffer, MAX_ROM_SIZE);
     }
-    chip8_init(&chip8);
     chip8_load_rom(&chip8, buffer);
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_Window *window = SDL_CreateWindow(
-        "CHIP-8 EMULATOR", 100, 100, 64 * SCALE, 32 * SCALE, SDL_WINDOW_OPENGL);
+        "chip-8 emulator", 100, 100, 64 * SCALE, 32 * SCALE, SDL_WINDOW_OPENGL);
     SDL_Renderer *renderer =
         SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -56,13 +57,12 @@ int main(int argc, char const *argv[])
             } break;
             }
         }
-        {
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-            SDL_RenderClear(renderer);
-        }
         chip8_emulate_cycle(&chip8);
-        {
-            SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0);
+
+        if (chip8.should_draw) {
+            SDL_SetRenderDrawColor(renderer, 0x0, 0x0, 0x0, 1);
+            SDL_RenderClear(renderer);
+            SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 1);
             for (size_t i = 0; i < WIDTH * HEIGHT; ++i) {
                 if (chip8.display[i]) {
                     SDL_RenderFillRect(renderer, &(SDL_Rect){
